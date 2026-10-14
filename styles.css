@@ -1064,6 +1064,32 @@ h3 {
   color: var(--gold);
 }
 
+.footer-org {
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+  margin-top: 22px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(233, 180, 76, 0.22);
+  width: min(100%, 420px);
+}
+
+.footer-org span {
+  font-family: var(--font-caps);
+  font-weight: 600;
+  font-size: 0.72rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--cream-muted);
+}
+
+.footer-org strong {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.2rem;
+  color: var(--gold-light);
+}
+
 /* ========== Sticky pass bar (phones) ========== */
 .pass-bar {
   position: fixed;
@@ -1083,6 +1109,11 @@ h3 {
 
 .pass-bar.is-visible {
   transform: none;
+}
+
+/* leave room so the bar never covers the end of the page on phones */
+.footer {
+  padding-bottom: calc(96px + env(safe-area-inset-bottom));
 }
 
 .pass-bar p {
@@ -1297,6 +1328,10 @@ h3 {
 @media (min-width: 960px) {
   .pass-bar {
     display: none;
+  }
+
+  .footer {
+    padding-bottom: calc(32px + env(safe-area-inset-bottom));
   }
 
   .vibes {

@@ -22,6 +22,7 @@ const EVENT = {
   address: 'Sector 1, R.K. Puram, Delhi',
   mapUrl: 'https://maps.app.goo.gl/wuFRFftdA895KVMt6',
   wowslyUrl: 'https://app.wowsly.com/e/3642/bhajan-clubbing-dandiya-edition/',
+  organizer: 'Ramleela Committee, R.K. Puram',
 }
 
 const VIBES = [
@@ -393,6 +394,10 @@ function Footer() {
           {EVENT.dateLabel} · {EVENT.timeLabel} Onwards · {EVENT.venue}, {EVENT.address}
         </p>
         <p className="fine">Tradition Meets Beats 🙏</p>
+        <p className="footer-org">
+          <span>Organized by</span>
+          <strong>{EVENT.organizer}</strong>
+        </p>
       </div>
     </footer>
   )
