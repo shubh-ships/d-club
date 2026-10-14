@@ -149,3 +149,17 @@ export function Icon({ name, className = 'icon' }) {
     </svg>
   )
 }
+
+// Disco / stage light beams sweeping from the two top corners. Pure CSS; kept faint so the title leads.
+export function DiscoLights() {
+  return (
+    <div className="disco" aria-hidden="true">
+      <span className="beam beam--l1" />
+      <span className="beam beam--l2" />
+      <span className="beam beam--r1" />
+      <span className="beam beam--r2" />
+      <span className="disco-source disco-source--l" />
+      <span className="disco-source disco-source--r" />
+    </div>
+  )
+}

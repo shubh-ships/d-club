@@ -72,51 +72,44 @@ function Confetti() {
   return <canvas ref={ref} className="confetti" aria-hidden="true" />
 }
 
+// Instagram / Facebook / Snapchat in-app browsers silently ignore file downloads.
+const IN_APP_BROWSER = /Instagram|FBAN|FBAV|FB_IAB|Snapchat|Line\//i.test(navigator.userAgent)
+
 export default function ThankYou({ registration, event, onBack }) {
   const headingRef = useRef(null)
   const { name, duplicate } = registration
   const firstName = name.split(' ')[0]
   const [ticket] = useState(() => `BC-${Math.floor(1000 + Math.random() * 9000)}`)
-  const [pass, setPass] = useState(null) // { url, blob }
+  const [pass, setPass] = useState(null) // { url: data URL, blob }
 
   useEffect(() => {
     headingRef.current?.focus({ preventScroll: true })
   }, [])
 
+  // A data: URL (not blob:) so long-press "Save image / Save to Photos" works on phones,
+  // and the download link keeps working after the tab has been in the background.
   useEffect(() => {
-    let url
     let cancelled = false
     renderPass({ name, ticket, event }).then((canvas) =>
       canvas.toBlob((blob) => {
-        if (cancelled || !blob) return
-        url = URL.createObjectURL(blob)
-        setPass({ url, blob })
+        if (!cancelled && blob) setPass({ url: canvas.toDataURL('image/png'), blob })
       }, 'image/png')
     )
     return () => {
       cancelled = true
-      if (url) URL.revokeObjectURL(url)
     }
   }, [name, ticket, event])
 
   const fileName = `bhajan-clubbing-pass-${ticket}.png`
 
-  const download = async () => {
+  const download = () => {
     if (!pass) return
-    const file = new File([pass.blob], fileName, { type: 'image/png' })
-    // On phones the share sheet is how a picture gets saved to the gallery.
-    if (matchMedia('(pointer: coarse)').matches && navigator.canShare?.({ files: [file] })) {
-      try {
-        await navigator.share({ files: [file], title: 'My Bhajan Clubbing pass' })
-        return
-      } catch (err) {
-        if (err.name === 'AbortError') return
-      }
-    }
     const a = document.createElement('a')
     a.href = pass.url
     a.download = fileName
+    document.body.appendChild(a)
     a.click()
+    a.remove()
   }
 
   const shareText = `I just got my FREE pass for ${event.name} — ${event.subtitle} 🎶🥢 Bhajans remixed with club beats + dandiya raas, ${event.dayName} ${event.dateLabel}, ${event.timeLabel} at ${event.venue}. Don't make me go alone — grab yours:`
@@ -180,6 +173,11 @@ export default function ThankYou({ registration, event, onBack }) {
             <Icon name="share" /> Invite Friends
           </button>
         </div>
+        <p className={`save-tip${IN_APP_BROWSER ? ' save-tip--warn' : ''}`}>
+          {IN_APP_BROWSER
+            ? 'Download not working? Long-press the pass and save the image, or open this page in Chrome / Safari.'
+            : 'Tip: you can also long-press the pass to save it to your photos.'}
+        </p>
         <p className="invite-note">
           Don't go alone. Send your pass to the group chat — passes are free, but everyone needs their own.
         </p>

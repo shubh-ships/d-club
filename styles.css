@@ -550,6 +550,96 @@ h3 {
   outline-color: var(--maroon);
 }
 
+/* ─── Disco beams from the top corners (subtle; the title leads) ─── */
+.disco {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  mix-blend-mode: screen;
+  opacity: 0.42;
+  /* fade the beams out toward the middle so the title stays clean */
+  -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 42%, rgba(0, 0, 0, 0.12) 0%, rgba(0, 0, 0, 0.35) 45%, #000 90%);
+  mask-image: radial-gradient(ellipse 70% 60% at 50% 42%, rgba(0, 0, 0, 0.12) 0%, rgba(0, 0, 0, 0.35) 45%, #000 90%);
+}
+
+.beam {
+  position: absolute;
+  top: -2%;
+  width: min(70vw, 620px);
+  height: 120%;
+  transform-origin: 50% 0;
+  clip-path: polygon(47% 0, 53% 0, 100% 100%, 0 100%);
+  filter: blur(10px);
+  animation: beam-sweep 9s ease-in-out infinite alternate;
+}
+
+.beam--l1,
+.beam--l2 {
+  left: calc(min(70vw, 620px) / -2);
+}
+
+.beam--r1,
+.beam--r2 {
+  right: calc(min(70vw, 620px) / -2);
+}
+
+.beam--l1 {
+  background: linear-gradient(180deg, rgba(255, 200, 97, 0.5), rgba(255, 200, 97, 0) 65%);
+  --from: -38deg;
+  --to: -12deg;
+}
+
+.beam--l2 {
+  background: linear-gradient(180deg, rgba(255, 61, 154, 0.42), rgba(255, 61, 154, 0) 60%);
+  --from: -20deg;
+  --to: -52deg;
+  animation-duration: 11s;
+}
+
+.beam--r1 {
+  background: linear-gradient(180deg, rgba(150, 100, 255, 0.45), rgba(150, 100, 255, 0) 60%);
+  --from: 38deg;
+  --to: 12deg;
+  animation-duration: 10s;
+}
+
+.beam--r2 {
+  background: linear-gradient(180deg, rgba(255, 200, 97, 0.45), rgba(255, 200, 97, 0) 65%);
+  --from: 20deg;
+  --to: 50deg;
+  animation-duration: 12s;
+}
+
+@keyframes beam-sweep {
+  from { rotate: var(--from); }
+  to { rotate: var(--to); }
+}
+
+.disco-source {
+  position: absolute;
+  top: -40px;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 236, 190, 0.7), rgba(255, 200, 97, 0.2) 40%, transparent 70%);
+}
+
+.disco-source--l {
+  left: -40px;
+}
+
+.disco-source--r {
+  right: -40px;
+}
+
+@media (max-width: 345px) {
+  .vibes-line {
+    font-size: 0.72rem;
+    letter-spacing: 0.02em;
+  }
+}
+
 /* ─── FOMO countdown ─── */
 .hero-fomo {
   grid-area: fomo;
@@ -1224,6 +1314,8 @@ h3 {
 
 .pass img {
   filter: drop-shadow(0 28px 30px rgba(43, 19, 8, 0.45));
+  -webkit-touch-callout: default;
+  user-select: auto;
 }
 
 .pass-loading {
@@ -1246,6 +1338,21 @@ h3 {
   gap: 12px;
   width: min(100%, 400px);
   margin-top: 24px;
+}
+
+.save-tip {
+  max-width: 40ch;
+  margin-top: 12px;
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+}
+
+.save-tip--warn {
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: rgba(163, 20, 28, 0.08);
+  font-weight: 500;
+  color: var(--red);
 }
 
 .invite-note {

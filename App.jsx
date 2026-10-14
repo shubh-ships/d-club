@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import ThankYou from './components/ThankYou.jsx'
 import { fetchRegistrationCount, registerGuest } from './supabase.js'
-import { BrushEdge, DandiyaStick, Icon, Mandala } from './components/Decor.jsx'
+import { BrushEdge, DandiyaStick, DiscoLights, Icon, Mandala } from './components/Decor.jsx'
 import heroPhoto from './assets/hero-garba-night.webp'
 import bhajanPhoto from './assets/bhajan-clubbing-stage.webp'
 import dandiyaPhoto from './assets/dandiya-dancers.webp'
@@ -236,6 +236,7 @@ function Hero({ onRegistered }) {
       <img className="hero-photo" src={heroPhoto} alt="" fetchpriority="high" />
       <div className="hero-shade" />
       <Mandala className="hero-mandala" />
+      <DiscoLights />
 
       <div className="container hero-grid">
         <div className="hero-copy">
