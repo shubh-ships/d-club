@@ -9,7 +9,7 @@ const MESSAGES = {
   offline: "You're offline. Check your internet connection and try again.",
   network: 'Network problem — please check your connection and try again.',
   timeout: 'This is taking too long. Please check your connection and try again.',
-  invalid: 'Please check your name, mobile number and age and try again.',
+  invalid: 'Please check your name, mobile number, age and PIN code and try again.',
   busy: 'Too many attempts right now. Please wait a minute and try again.',
   generic: 'Could not register right now. Please try again.',
 }
@@ -22,7 +22,7 @@ function headers() {
 
 // Resolves to { duplicate: true } when the number is already registered; throws an Error with a
 // user-facing message otherwise.
-export async function registerGuest({ name, phone, age }) {
+export async function registerGuest({ name, phone, age, pincode }) {
   if (!url || !key) throw new Error(MESSAGES.config)
   if (navigator.onLine === false) throw new Error(MESSAGES.offline)
 
@@ -31,7 +31,7 @@ export async function registerGuest({ name, phone, age }) {
     res = await fetch(`${url}/rest/v1/registrations`, {
       method: 'POST',
       headers: headers(),
-      body: JSON.stringify({ name, phone, age }),
+      body: JSON.stringify({ name, phone, age, pincode }),
       signal: AbortSignal.timeout?.(TIMEOUT_MS),
     })
   } catch (err) {

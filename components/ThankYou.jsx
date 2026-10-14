@@ -72,47 +72,72 @@ function Confetti() {
   return <canvas ref={ref} className="confetti" aria-hidden="true" />
 }
 
-// Instagram / Facebook / Snapchat in-app browsers silently ignore file downloads.
-const IN_APP_BROWSER = /Instagram|FBAN|FBAV|FB_IAB|Snapchat|Line\//i.test(navigator.userAgent)
+// In-app browsers (Instagram, Facebook, Snapchat, LinkedIn, Line, iOS app web views) silently ignore
+// file downloads, so there we show the pass full-screen with a long-press hint instead.
+const UA = navigator.userAgent
+const IOS = /iPhone|iPad|iPod/i.test(UA) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)
+const IN_APP_BROWSER =
+  /Instagram|FBAN|FBAV|FB_IAB|Snapchat|LinkedInApp|Line\/|; wv\)/i.test(UA) || (IOS && !/Safari\//.test(UA))
 
-export default function ThankYou({ registration, event, onBack }) {
+export default function ThankYou({ registration, event, lineup = [], onBack }) {
   const headingRef = useRef(null)
   const { name, duplicate } = registration
   const firstName = name.split(' ')[0]
   const [ticket] = useState(() => `BC-${Math.floor(1000 + Math.random() * 9000)}`)
-  const [pass, setPass] = useState(null) // { url: data URL, blob }
+  const [pass, setPass] = useState(null) // { url: data URL (for <img> and long-press), blob }
+  const [saveView, setSaveView] = useState(false)
+  const [saved, setSaved] = useState(false)
 
   useEffect(() => {
     headingRef.current?.focus({ preventScroll: true })
   }, [])
 
-  // A data: URL (not blob:) so long-press "Save image / Save to Photos" works on phones,
-  // and the download link keeps working after the tab has been in the background.
+  // JPEG on a cream ground keeps the pass ~300 KB (a 1.4 MB PNG data URL was too big for mobile
+  // Chrome to download). The data URL feeds the <img> so long-press "Save image" always works.
   useEffect(() => {
     let cancelled = false
-    renderPass({ name, ticket, event }).then((canvas) =>
-      canvas.toBlob((blob) => {
-        if (!cancelled && blob) setPass({ url: canvas.toDataURL('image/png'), blob })
-      }, 'image/png')
-    )
+    renderPass({ name, ticket, event }).then((art) => {
+      const canvas = document.createElement('canvas')
+      canvas.width = art.width
+      canvas.height = art.height
+      const ctx = canvas.getContext('2d')
+      ctx.fillStyle = '#f8eedb'
+      ctx.fillRect(0, 0, canvas.width, canvas.height)
+      ctx.drawImage(art, 0, 0)
+      canvas.toBlob(
+        (blob) => {
+          if (!cancelled && blob) setPass({ url: canvas.toDataURL('image/jpeg', 0.9), blob })
+        },
+        'image/jpeg',
+        0.9
+      )
+    })
     return () => {
       cancelled = true
     }
   }, [name, ticket, event])
 
-  const fileName = `bhajan-clubbing-pass-${ticket}.png`
+  const fileName = `bhajan-clubbing-pass-${ticket}.jpg`
 
   const download = () => {
     if (!pass) return
+    if (IN_APP_BROWSER) {
+      setSaveView(true)
+      return
+    }
+    const href = URL.createObjectURL(pass.blob)
     const a = document.createElement('a')
-    a.href = pass.url
+    a.href = href
     a.download = fileName
+    a.rel = 'noopener'
     document.body.appendChild(a)
     a.click()
     a.remove()
+    setTimeout(() => URL.revokeObjectURL(href), 60_000)
+    setSaved(true)
   }
 
-  const shareText = `I just got my FREE pass for ${event.name} — ${event.subtitle} 🎶🥢 Bhajans remixed with club beats + dandiya raas, ${event.dayName} ${event.dateLabel}, ${event.timeLabel} at ${event.venue}. Don't make me go alone — grab yours:`
+  const shareText = `I just got my FREE pass for ${event.name} — ${event.subtitle} 🎶🥢 Bhajans remixed with club beats + dandiya night, ${event.dayName} ${event.dateLabel}, ${event.timeLabel} at ${event.venue}. Don't make me go alone — grab yours:`
   const shareUrl = window.location.origin
 
   // Sharing the pass itself (not just a link) is what makes friends want one.
@@ -173,19 +198,75 @@ export default function ThankYou({ registration, event, onBack }) {
             <Icon name="share" /> Invite Friends
           </button>
         </div>
-        <p className={`save-tip${IN_APP_BROWSER ? ' save-tip--warn' : ''}`}>
-          {IN_APP_BROWSER
-            ? 'Download not working? Long-press the pass and save the image, or open this page in Chrome / Safari.'
+        <p className="save-tip" role="status">
+          {saved
+            ? IOS
+              ? 'Saved to your Files → Downloads. To add it to Photos, long-press the pass above and tap “Save to Photos”.'
+              : 'Pass downloaded — check your Downloads or Gallery.'
             : 'Tip: you can also long-press the pass to save it to your photos.'}
         </p>
         <p className="invite-note">
           Don't go alone. Send your pass to the group chat — passes are free, but everyone needs their own.
         </p>
 
+        {lineup.length > 0 && (
+          <div className="thanks-lineup">
+            <h2>Who's playing</h2>
+            <ul>
+              {lineup.map((a) => (
+                <li key={a.name}>
+                  <img src={a.face} alt="" width="160" height="160" />
+                  <span className="thanks-act">
+                    <span className="thanks-act-role">{a.role}</span>
+                    <strong>{a.name}</strong>
+                    <a href={`https://instagram.com/${a.insta}`} target="_blank" rel="noopener noreferrer">
+                      <Icon name="instagram" /> @{a.insta}
+                    </a>
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        <ul className="know-before">
+          <li>
+            <span className="know-icon">
+              <Icon name="sticks" />
+            </span>
+            <span>
+              <strong>Bring your dandiyas</strong>
+              Carry your own pair of dandiya sticks and jump straight into the circles.
+            </span>
+          </li>
+          <li>
+            <span className="know-icon">
+              <Icon name="food" />
+            </span>
+            <span>
+              <strong>Food stalls at the venue</strong>
+              Refuel between rounds — food stalls will be set up at {event.venue}.
+            </span>
+          </li>
+        </ul>
+
         <button type="button" className="thanks-back" onClick={onBack}>
           ← Register someone else
         </button>
       </div>
+
+      {saveView && pass && (
+        <div className="save-view" role="dialog" aria-modal="true" aria-label="Save your pass">
+          <p className="save-view-hint">
+            Long-press the pass and tap <strong>{IOS ? '“Save to Photos”' : '“Download image”'}</strong>
+          </p>
+          <img src={pass.url} alt={`Guest pass for ${name}, ticket ${ticket}`} />
+          <p className="save-view-alt">Or open this page in {IOS ? 'Safari' : 'Chrome'} to download it directly.</p>
+          <button type="button" className="btn btn-orange" onClick={() => setSaveView(false)}>
+            Done
+          </button>
+        </div>
+      )}
     </section>
   )
 }

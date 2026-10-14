@@ -18,7 +18,8 @@ const C = {
   line: 'rgba(168,115,28,.45)',
 }
 
-const DISPLAY = '"Playfair Display", Georgia, serif'
+const DISPLAY = 'Cinzel, Georgia, serif'
+const SCRIPT = 'Allura, cursive'
 const CAPS = 'Cinzel, Georgia, serif'
 const BODY = 'Poppins, sans-serif'
 
@@ -103,49 +104,6 @@ function rosette(ctx, cx, cy, r, color, alpha) {
   for (const rr of [r * 0.1, r * 0.41, r * 0.69, r]) {
     ctx.beginPath()
     ctx.arc(0, 0, rr, 0, Math.PI * 2)
-    ctx.stroke()
-  }
-  ctx.restore()
-}
-
-function stick(ctx, x, y, len, angle) {
-  ctx.save()
-  ctx.translate(x, y)
-  ctx.rotate(angle)
-  const w = 15
-  ctx.beginPath()
-  ctx.roundRect(-w / 2, -len / 2, w, len, w / 2)
-  ctx.save()
-  ctx.clip()
-  ctx.fillStyle = '#f4c04e'
-  ctx.fillRect(-w, -len, w * 2, len * 2)
-  ctx.rotate(-0.55)
-  for (let s = -len; s < len; s += 20) {
-    ctx.fillStyle = '#b3161f'
-    ctx.fillRect(-len, s, len * 2, 7)
-    ctx.fillStyle = '#1f6b3a'
-    ctx.fillRect(-len, s + 7, len * 2, 3)
-  }
-  ctx.restore()
-  const shade = ctx.createLinearGradient(-w / 2, 0, w / 2, 0)
-  shade.addColorStop(0, 'rgba(0,0,0,.35)')
-  shade.addColorStop(0.45, 'rgba(255,255,255,.25)')
-  shade.addColorStop(1, 'rgba(0,0,0,.45)')
-  ctx.fillStyle = shade
-  ctx.fill()
-  ctx.fillStyle = goldGradient(ctx, -10, 10)
-  for (const cy of [-len / 2, len / 2 - 13]) {
-    ctx.beginPath()
-    ctx.roundRect(-w / 2 - 3, cy, w + 6, 13, 4)
-    ctx.fill()
-  }
-  ctx.strokeStyle = '#d1202a'
-  ctx.lineWidth = 3
-  ctx.lineCap = 'round'
-  for (const dx of [-9, 0, 9]) {
-    ctx.beginPath()
-    ctx.moveTo(0, -len / 2)
-    ctx.quadraticCurveTo(dx * 0.4, -len / 2 - 10, dx, -len / 2 - 20)
     ctx.stroke()
   }
   ctx.restore()
@@ -329,7 +287,7 @@ function ticket(w, h, perfY) {
 
 export async function renderPass({ name, ticket: ticketNo, event }) {
   await Promise.all(
-    [`800 140px ${DISPLAY}`, `700 60px ${DISPLAY}`, `700 40px ${CAPS}`, `600 30px ${CAPS}`, `600 36px ${BODY}`, `400 28px ${BODY}`].map((f) =>
+    [`700 112px ${DISPLAY}`, `600 26px ${CAPS}`, `400 120px ${SCRIPT}`, `600 36px ${BODY}`, `400 28px ${BODY}`].map((f) =>
       document.fonts.load(f).catch(() => {})
     )
   )
@@ -378,37 +336,39 @@ export async function renderPass({ name, ticket: ticketNo, event }) {
     ctx.fill()
   }
 
-  // ── Emblem + title ──
-  stick(ctx, W / 2, 236, 160, -0.5)
-  stick(ctx, W / 2, 236, 160, 0.5)
-
+  // ── Poster lockup ──
   ctx.textAlign = 'center'
   ctx.textBaseline = 'alphabetic'
-  ctx.shadowColor = 'rgba(30,0,5,.55)'
-  ctx.shadowOffsetY = 6
-  ctx.shadowBlur = 16
-  ctx.fillStyle = goldGradient(ctx, 320, 580)
-  ctx.font = `800 140px ${DISPLAY}`
-  ctx.fillText('Bhajan', W / 2, 440)
-  ctx.fillText('Clubbing', W / 2, 575)
+  ctx.fillStyle = 'rgba(255,240,210,.88)'
+  ctx.font = `600 26px ${CAPS}`
+  spaced(ctx, "YOU'RE INVITED TO", W / 2, 215, 8)
+  ornamentRule(ctx, W / 2, 250, 120, C.gold)
+
+  ctx.shadowColor = 'rgba(40,8,0,.75)'
+  ctx.shadowOffsetY = 5
+  ctx.shadowBlur = 14
+  ctx.fillStyle = goldGradient(ctx, 290, 510)
+  ctx.font = `700 112px ${DISPLAY}`
+  ctx.fillText('BHAJAN', W / 2, 382)
+  ctx.font = `700 ${fitFont(ctx, 'CLUBBING', fw - 150, 700, 112, DISPLAY)}px ${DISPLAY}`
+  ctx.fillText('CLUBBING', W / 2, 500)
+
+  ctx.save()
+  ctx.translate(W / 2, 600)
+  ctx.rotate(-0.08)
+  const sg = ctx.createLinearGradient(0, -80, 0, 20)
+  sg.addColorStop(0, '#ffc46b')
+  sg.addColorStop(0.55, '#f39a3a')
+  sg.addColorStop(1, '#d8661c')
+  ctx.fillStyle = sg
+  ctx.font = `400 118px ${SCRIPT}`
+  ctx.fillText(event.subtitle, 0, 0)
+  ctx.restore()
   ctx.shadowColor = 'transparent'
 
-  ribbon(ctx, W / 2, 655, 460, 64, event.subtitle.toUpperCase(), 32)
-
-  // both halves of the night
-  ctx.font = `700 28px ${CAPS}`
   ctx.fillStyle = C.goldLight
-  const left = 'BHAJAN CLUBBING'
-  const right = 'DANDIYA RAAS'
-  const sp = 4
-  const gap = 46
-  const lw = spacedWidth(ctx, left, sp)
-  const rw = spacedWidth(ctx, right, sp)
-  const startX = W / 2 - (lw + gap + rw) / 2
-  ctx.textAlign = 'left'
-  spaced(ctx, left, startX, 760, sp)
-  spaced(ctx, right, startX + lw + gap, 760, sp)
-  diamond(ctx, startX + lw + gap / 2, 750, 8, C.gold)
+  ctx.font = `600 24px ${CAPS}`
+  spaced(ctx, 'DANDIYA · MUSIC · FRIENDS · GOOD VIBES', W / 2, 712, 5)
 
   // ── Ticket ──
   const tx = 110
@@ -430,7 +390,7 @@ export async function renderPass({ name, ticket: ticketNo, event }) {
   ctx.font = `600 22px ${CAPS}`
   spaced(ctx, 'ADMIT ONE', W / 2, ty + 98, 6)
   ctx.fillStyle = C.ink
-  const ns = fitFont(ctx, name, tw - 140, 700, 66, DISPLAY)
+  const ns = fitFont(ctx, name, tw - 140, 700, 58, DISPLAY)
   ctx.font = `700 ${ns}px ${DISPLAY}`
   ctx.fillText(name, W / 2, ty + 172)
   ornamentRule(ctx, W / 2, ty + 210, 150, C.gold)
@@ -443,7 +403,7 @@ export async function renderPass({ name, ticket: ticketNo, event }) {
   spaced(ctx, 'TICKET NO.', colL, ty + 262, 5)
   spaced(ctx, 'ENTRY', colR, ty + 262, 5)
   ctx.fillStyle = C.red
-  ctx.font = `800 58px ${DISPLAY}`
+  ctx.font = `700 52px ${DISPLAY}`
   ctx.fillText(ticketNo, colL, ty + 322)
   ctx.fillText('FREE', colR, ty + 322)
   ctx.strokeStyle = C.line

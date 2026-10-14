@@ -40,37 +40,6 @@ export function Mandala({ className = '' }) {
   )
 }
 
-// One striped dandiya stick with gold caps and a tassel; rotate with CSS.
-export function DandiyaStick({ className = '' }) {
-  const id = useId().replace(/:/g, '')
-  return (
-    <svg className={className} viewBox="0 0 24 200" aria-hidden="true">
-      <defs>
-        <pattern id={`${id}-s`} width="24" height="16" patternUnits="userSpaceOnUse" patternTransform="rotate(-32)">
-          <rect width="24" height="16" fill="#f4c04e" />
-          <rect width="24" height="6" fill="#b3161f" />
-          <rect y="6" width="24" height="2" fill="#1f6b3a" />
-        </pattern>
-        <linearGradient id={`${id}-shade`} x1="0" x2="1">
-          <stop offset="0" stopColor="#000" stopOpacity="0.35" />
-          <stop offset="0.45" stopColor="#fff" stopOpacity="0.25" />
-          <stop offset="1" stopColor="#000" stopOpacity="0.45" />
-        </linearGradient>
-        <linearGradient id={`${id}-gold`} x1="0" x2="1">
-          <stop offset="0" stopColor="#9a6a17" />
-          <stop offset="0.5" stopColor="#ffe7a3" />
-          <stop offset="1" stopColor="#9a6a17" />
-        </linearGradient>
-      </defs>
-      <rect x="6" y="18" width="12" height="164" rx="6" fill={`url(#${id}-s)`} />
-      <rect x="6" y="18" width="12" height="164" rx="6" fill={`url(#${id}-shade)`} />
-      <rect x="4.5" y="12" width="15" height="12" rx="3" fill={`url(#${id}-gold)`} />
-      <rect x="4.5" y="176" width="15" height="12" rx="3" fill={`url(#${id}-gold)`} />
-      <path d="M12 12 C9 6 7 3 5 0 M12 12 C12 6 12 3 12 0 M12 12 C15 6 17 3 19 0" stroke="#d1202a" strokeWidth="2" strokeLinecap="round" fill="none" />
-    </svg>
-  )
-}
-
 // Seeded rough brush-stroke edge. `fill` is the colour of the section it bleeds into.
 function brushPath(seed, w = 1440, h = 120) {
   let s = seed
@@ -137,6 +106,8 @@ export const ICON_PATHS = {
   bolt: ['M13 2.5L5 13.5h6l-1 8 8-11h-6l1-8z'],
   hands: ['M12 20c-4-2.5-8-5.6-8-10a4 4 0 0 1 8-1.2A4 4 0 0 1 20 10c0 4.4-4 7.5-8 10z'],
   cake: ['M4 20.5h16v-7a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v7z', 'M4 15.5c1.3 1 2.7 1 4 0s2.7-1 4 0 2.7 1 4 0 2.7-1 4 0M12 11.5V8M12 4.5c.8.9.8 1.8 0 2.5-.8-.7-.8-1.6 0-2.5z'],
+  food: ['M3.5 12.5h17a8.5 8.5 0 0 1-17 0z', 'M8 8.5c0-1.2 1-1.2 1-2.4S8 4.9 8 3.7M12 8.5c0-1.2 1-1.2 1-2.4s-1-1.2-1-2.4M16 8.5c0-1.2 1-1.2 1-2.4s-1-1.2-1-2.4'],
+  instagram: ['M7.5 3h9A4.5 4.5 0 0 1 21 7.5v9a4.5 4.5 0 0 1-4.5 4.5h-9A4.5 4.5 0 0 1 3 16.5v-9A4.5 4.5 0 0 1 7.5 3z', 'M12 8a4 4 0 1 1 0 8a4 4 0 0 1 0-8z', 'M17.2 6.6h.01'],
   hourglass: ['M6.5 3h11M6.5 21h11', 'M7.5 3c0 4.5 4.5 6 4.5 9s-4.5 4.5-4.5 9M16.5 3c0 4.5-4.5 6-4.5 9s4.5 4.5 4.5 9'],
 }
 
@@ -150,16 +121,58 @@ export function Icon({ name, className = 'icon' }) {
   )
 }
 
-// Disco / stage light beams sweeping from the two top corners. Pure CSS; kept faint so the title leads.
-export function DiscoLights() {
+// One striped dandiya stick with gold caps and a tassel; rotate with CSS.
+export function DandiyaStick({ className = '' }) {
+  const id = useId().replace(/:/g, '')
   return (
-    <div className="disco" aria-hidden="true">
-      <span className="beam beam--l1" />
-      <span className="beam beam--l2" />
-      <span className="beam beam--r1" />
-      <span className="beam beam--r2" />
-      <span className="disco-source disco-source--l" />
-      <span className="disco-source disco-source--r" />
-    </div>
+    <svg className={className} viewBox="0 0 24 200" aria-hidden="true">
+      <defs>
+        <pattern id={`${id}-s`} width="24" height="16" patternUnits="userSpaceOnUse" patternTransform="rotate(-32)">
+          <rect width="24" height="16" fill="#f4c04e" />
+          <rect width="24" height="6" fill="#b3161f" />
+          <rect y="6" width="24" height="2" fill="#1f6b3a" />
+        </pattern>
+        <linearGradient id={`${id}-shade`} x1="0" x2="1">
+          <stop offset="0" stopColor="#000" stopOpacity="0.35" />
+          <stop offset="0.45" stopColor="#fff" stopOpacity="0.25" />
+          <stop offset="1" stopColor="#000" stopOpacity="0.45" />
+        </linearGradient>
+        <linearGradient id={`${id}-gold`} x1="0" x2="1">
+          <stop offset="0" stopColor="#9a6a17" />
+          <stop offset="0.5" stopColor="#ffe7a3" />
+          <stop offset="1" stopColor="#9a6a17" />
+        </linearGradient>
+      </defs>
+      <rect x="6" y="18" width="12" height="164" rx="6" fill={`url(#${id}-s)`} />
+      <rect x="6" y="18" width="12" height="164" rx="6" fill={`url(#${id}-shade)`} />
+      <rect x="4.5" y="12" width="15" height="12" rx="3" fill={`url(#${id}-gold)`} />
+      <rect x="4.5" y="176" width="15" height="12" rx="3" fill={`url(#${id}-gold)`} />
+      <path d="M12 12 C9 6 7 3 5 0 M12 12 C12 6 12 3 12 0 M12 12 C15 6 17 3 19 0" stroke="#d1202a" strokeWidth="2" strokeLinecap="round" fill="none" />
+    </svg>
+  )
+}
+
+// Small lotus, the poster's divider motif.
+export function Lotus({ className = '' }) {
+  return (
+    <svg className={className} viewBox="0 0 32 20" aria-hidden="true">
+      <g fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round">
+        <path d="M16 2c3 3.4 3 9.6 0 14-3-4.4-3-10.6 0-14z" />
+        <path d="M16 16c-1.6-4.6-5-7.8-9.6-8.6.4 5 4 8.6 9.6 8.6z" />
+        <path d="M16 16c1.6-4.6 5-7.8 9.6-8.6-.4 5-4 8.6-9.6 8.6z" />
+        <path d="M16 16c-3.6-2.4-8-3-12.4-1.6C6.8 17.6 11.4 18 16 16zM16 16c3.6-2.4 8-3 12.4-1.6-3.2 3.2-7.8 3.6-12.4 1.6z" />
+      </g>
+    </svg>
+  )
+}
+
+// Gold rule — lotus — gold rule.
+export function Ornament({ className = '' }) {
+  return (
+    <span className={`ornament ${className}`} aria-hidden="true">
+      <span className="ornament-line" />
+      <Lotus className="ornament-lotus" />
+      <span className="ornament-line" />
+    </span>
   )
 }

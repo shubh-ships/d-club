@@ -10,28 +10,34 @@ web
 Young people in Delhi (Gen-Z, college-age) who hear about the event through WhatsApp/Instagram shares and open the link on their phones. Their job: decide in seconds whether it's worth going, then grab a free pass.
 
 ## Product Purpose
-Single-page registration site for **Bhajan Clubbing — Dandiya Edition** (21 Oct 2026, 5:30 PM onwards, Ramlila Ground, Sector 1, R.K. Puram, Delhi). Visitors register name, mobile and age for a free entry pass (stored in Supabase), get an on-screen guest pass to download, and are nudged to invite friends. Success = registrations and shares.
+Single-page registration site for **Bhajan Clubbing — Dandiya Edition** (21 Oct 2026, 5:30 PM onwards, Ramleela Ground, Sector 1, R.K. Puram, Delhi). Visitors register name, mobile and age for a free entry pass (stored in Supabase), get an on-screen guest pass to download, and are nudged to invite friends. Success = registrations and shares.
 
 ## Positioning
 A fusion night: devotional bhajans remixed with club beats, plus dandiya raas — tradition that turns the volume up. Not a parents' dandiya night, not a generic club night.
 
 ## Capabilities and Constraints
 - React 18 + Vite, single-file build (vite-plugin-singlefile): JS, CSS, self-hosted fonts (assets/fonts, OFL) and photos are all inlined, so a visit is one request to Vercel. Keep new assets small; they ship inside index.html. Deployed on Vercel.
-- Registration via Supabase (`supabase.js`): name, mobile, age (5–100). Schema in `supabase/schema.sql`. Duplicate numbers shown as "already registered".
+- Registration via Supabase (`supabase.js`): name, mobile, age (5–100), 6-digit PIN code. Schema in `supabase/schema.sql`. Duplicate numbers shown as "already registered".
 - Thank-you view: on-screen guest pass with two actions only — Download Pass and Invite Friends (Web Share / WhatsApp).
 - No navbar (matches frontend/). The Wowsly URL stays in `EVENT.wowslyUrl` but is not linked on the page.
 - No social media accounts exist; do not add social links.
-- Bhajan Clubbing and Dandiya Raas get equal billing ("One night. Two vibes.").
+- Bhajan Clubbing and Dandiya Night get equal billing ("One Night, Two Vibes").
+- Page order: hero (artists in top corners, title, details, countdown) → form → lineup → One Night Two Vibes → food stalls → footer (map link, "Organized by").
+- Food stalls will be available at the venue; guests are asked to bring their own dandiyas (thank-you page).
+- Pass downloads as a ~275 KB JPEG; in-app browsers get a full-screen long-press save view.
 - FOMO/conversion: escalating countdown, "Don't watch it on someone else's story", sticky mobile pass bar, live registration counter (RPC `registration_count`, shown only at 50+), Invite Friends shares the pass image.
 - Map link: https://maps.app.goo.gl/wuFRFftdA895KVMt6 (Ramleela Ground, Sector 1, R.K. Puram).
 
 ## Brand Commitments
-- Visual direction is pinned by the user's reference mock (2026-10-14): dark maroon/black + gold over festive night photography, alternating with cream parchment; gold Playfair title with striped dandiya sticks and a gold "Dandiya Edition" ribbon; arch-framed guest pass with Download and Print.
+- The official event poster (supplied 2026-10-15) is the visual reference: warm maroon night, gold Cinzel capitals "BHAJAN CLUBBING", orange brush-script "Dandiya Edition" (Allura), Cormorant italic tagline, lotus dividers, marigold garlands and brass lanterns, the dancing crowd. Page imagery is cropped from the poster (`assets/poster/`).
+- Copy from the poster: "You're invited to", "Dandiya · Music · Friends · Good Vibes", "An evening where tradition meets the dance floor, for a night of bhajans, beats, and dandiya.", "Free Entry · Registration Required".
+- Lineup (from poster): DJ Beat Crush; Live music: Malhotra Sisters.
+- Host (from poster): Rama Krishna Puram Ramleela Dharmic Samiti. Venue spelled "Ramleela Ground".
 - Page structure follows the sibling `frontend/` project: no navbar, one hero holding title + details + form + countdown, then a venue card and footer.
 
 ## Evidence on Hand
-- Photos (footer credit removed at owner request 2026-10-14; CC BY / BY-SA photos legally need attribution — replace with own or CC0 photos): "Garba night" by Archi465, CC BY-SA 4.0 (hero); "Concert Show" by Nainoa Shizuru, CC0 (Bhajan Clubbing panel); "Gujarat Fairs & Festivals" by Milan1969, CC BY 4.0 (Dandiya panel).
-- No logo, artist names, sponsors, capacity limit or registration counts supplied. Do not invent performers, sponsors, attendance numbers, scarcity, or testimonials; FOMO uses only the real date, countdown, and "free but pass required".
+- Artist photos and hero imagery: crops of the owner's poster and Malhotra Sisters promo. Section photos (club night, dandiya night, street food) are CC0 — no attribution needed.
+- No capacity limit supplied. Owner chose (2026-10-16, after being told it is misleading) a clock-based "passes left" counter that is not tied to real registrations (`SCARCITY` in App.jsx). Do not invent sponsors, attendance numbers or testimonials beyond that.
 
 ## Product Principles
 - The offer (free pass, date, place) is readable within one glance on a phone.
