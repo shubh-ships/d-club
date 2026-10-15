@@ -371,7 +371,7 @@ function RegisterCard({ onRegistered }) {
               onChange={update}
               inputMode="numeric"
               autoComplete="postal-code"
-              placeholder="110022"
+              placeholder="110083"
               maxLength={6}
               aria-invalid={!!errors.pincode}
             />
