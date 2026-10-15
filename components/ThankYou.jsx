@@ -137,17 +137,17 @@ export default function ThankYou({ registration, event, lineup = [], onBack }) {
     setSaved(true)
   }
 
-  const shareText = `I just got my FREE pass for ${event.name} — ${event.subtitle} 🎶🥢 Bhajans remixed with club beats + dandiya night, ${event.dayName} ${event.dateLabel}, ${event.timeLabel} at ${event.venue}. Don't make me go alone — grab yours:`
-  const shareUrl = window.location.origin
+  // Exact invite copy supplied by the organisers.
+  const shareUrl = 'https://dandiaxbhajanclubbing.vercel.app'
+  const message = `I just got my FREE pass for Bhajan Clubbing — Dandiya Edition with DJ BeatCrush and Malhotra Sister 🎶🥢 Don't make me go alone — grab yours: ${shareUrl}`
 
   // Sharing the pass itself (not just a link) is what makes friends want one.
   const invite = async () => {
-    const message = `${shareText} ${shareUrl}`
     if (navigator.share) {
       const file = pass && new File([pass.blob], fileName, { type: 'image/png' })
       const withPass = file && navigator.canShare?.({ files: [file], text: message })
       try {
-        await navigator.share(withPass ? { files: [file], text: message } : { title: `${event.name} — ${event.subtitle}`, text: shareText, url: shareUrl })
+        await navigator.share(withPass ? { files: [file], text: message } : { text: message })
         return
       } catch (err) {
         if (err.name === 'AbortError') return
@@ -197,6 +197,9 @@ export default function ThankYou({ registration, event, lineup = [], onBack }) {
           <button type="button" className="btn btn-orange" onClick={invite}>
             <Icon name="share" /> Invite Friends
           </button>
+          <a className="btn btn-outline-maroon pass-map" href={event.mapUrl} target="_blank" rel="noreferrer">
+            <Icon name="pin" /> Open in Google Maps
+          </a>
         </div>
         <p className="save-tip" role="status">
           {saved
@@ -245,10 +248,12 @@ export default function ThankYou({ registration, event, lineup = [], onBack }) {
             </span>
             <span>
               <strong>Food stalls at the venue</strong>
-              Refuel between rounds — food stalls will be set up at {event.venue}.
+              Refuel between rounds — food stalls will be set up at the venue.
             </span>
           </li>
         </ul>
+
+        <p className="thanks-sendoff">Come with your festive spirit and leave with memories that last a lifetime.</p>
 
         <button type="button" className="thanks-back" onClick={onBack}>
           ← Register someone else

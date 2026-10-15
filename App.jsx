@@ -10,8 +10,9 @@ import sistersPhoto from './assets/artists/malhotra-sisters.webp'
 import sistersFace from './assets/artists/malhotra-sisters-face.webp'
 import clubPhoto from './assets/vibes/bhajan-kirtan.webp'
 import dandiyaPhoto from './assets/vibes/dandiya-night.webp'
-// Loaded from Shutterstock at view time (owner's choice) so it adds nothing to the bundle.
-const FOOD_PHOTO_URL = 'https://www.shutterstock.com/shutterstock/videos/4067930735/thumb/1.jpg?ip=x480'
+import foodPhoto from './assets/vibes/food-stalls.webp'
+import djCard from './assets/artists/dj-beat-crush-card.webp'
+import sistersCard from './assets/artists/malhotra-sisters-card.webp'
 
 
 // ---- Event content: edit here ----
@@ -34,8 +35,8 @@ const EVENT = {
 }
 
 const LINEUP = [
-  { role: 'On the decks', name: 'DJ Beat Crush', short: 'DJ Beat Crush', photo: djDecks, portrait: djFaceLarge, face: djFace, insta: 'beatcrushmusic', note: 'Bhajans remixed with club beats, all night long.' },
-  { role: 'Performing live', name: 'Malhotra Sisters', short: 'Malhotra Sisters', photo: sistersPhoto, face: sistersFace, insta: 'malhotrasistersofficial', note: 'Live dandiya and garba favourites to keep every circle spinning.' },
+  { role: 'On the decks', name: 'DJ Beat Crush', short: 'DJ Beat Crush', photo: djDecks, portrait: djFaceLarge, face: djFace, card: djCard, insta: 'beatcrushmusic', note: "Delhi's most popular DJ is bringing the beats to your Dandiya night." },
+  { role: 'Performing live', name: 'Malhotra Sisters', short: 'Malhotra Sisters', photo: sistersPhoto, face: sistersFace, card: sistersCard, insta: 'malhotrasistersofficial', note: 'The Malhotra Sisters are bringing divine melodies and soulful energy to Bhajan Clubbing.' },
 ]
 
 const VIBES = [
@@ -102,7 +103,7 @@ const pad = (n) => String(n).padStart(2, '0')
 // Scarcity display (owner's choice): a clock-based "passes left" number, identical for every visitor,
 // that only ever goes down — from SCARCITY.from at SCARCITY.launch to SCARCITY.to at gate time.
 // It is not tied to real registrations; the live Supabase counter below is the real figure.
-const SCARCITY = { launch: '2026-10-14T00:00:00+05:30', from: 1200, to: 37, cap: 2000 }
+const SCARCITY = { launch: '2026-10-14T00:00:00+05:30', from: 1200, to: 37, cap: 4000 }
 
 function passesLeftAt(now) {
   const start = new Date(SCARCITY.launch).getTime()
@@ -129,7 +130,11 @@ function PassesLeft({ compact = false }) {
     <div className={`passes-left${compact ? ' passes-left--compact' : ''}`} role="status">
       <p>
         <span className="live-dot" aria-hidden="true" />
-        Only <strong>{left.toLocaleString('en-IN')}</strong> free passes left
+        <strong>
+          {left}
+          <span className="passes-cap">/{SCARCITY.cap}</span>
+        </strong>{' '}
+        free passes left
       </p>
       {!compact && (
         <span className="passes-bar" aria-hidden="true">
@@ -198,11 +203,11 @@ function TopArtists() {
           rel="noopener noreferrer"
           aria-label={`${a.name} on Instagram`}
         >
-          <img src={a.face} alt="" width="160" height="160" />
-          <span className="top-artist-cap">
-            <strong>{a.short}</strong>
-            <span>{a.role}</span>
+          <span className="spotlit">
+            <img src={a.card} alt="" width="200" height="250" />
           </span>
+          <span className="spotlit-role">{a.role}</span>
+          <span className="spotlit-name">{a.short}</span>
         </a>
       ))}
     </div>
@@ -288,7 +293,7 @@ function RegisterCard({ onRegistered }) {
       <span className="ribbon card-ribbon">Free Entry Pass</span>
       <CrossedDandiyas className="dandiyas--form" />
       <h2 className="form-title">Grab your free pass</h2>
-      <p className="form-sub">Bhajan Clubbing + Dandiya Night · Free entry with a pass</p>
+      <p className="form-sub">Bhajan Clubbing + Dandiya Night</p>
       <PassesLeft />
       {count >= SOCIAL_PROOF_MIN && (
         <p className="social-proof">
@@ -434,10 +439,18 @@ function Hero({ onRegistered }) {
               <dt>{EVENT.timeLabel}</dt>
               <dd>Onwards</dd>
             </div>
-            <div>
+            <div className="info-map">
               <Icon name="pin" />
               <dt>{EVENT.venue}</dt>
               <dd>{EVENT.address}</dd>
+              <dd className="info-map-hint">Open in Maps ↗</dd>
+              <a
+                className="info-map-link"
+                href={EVENT.mapUrl}
+                target="_blank"
+                rel="noreferrer"
+                aria-label={`Open ${EVENT.venue}, ${EVENT.address} in Google Maps`}
+              />
             </div>
           </dl>
 
@@ -523,29 +536,18 @@ function Vibes() {
   )
 }
 
-// Remote food photo; hides itself if the image ever fails to load.
-function FoodPhoto() {
-  const [ok, setOk] = useState(true)
-  if (!ok) return null
-  return (
-    <figure className="food-photo">
-      <img
-        src={FOOD_PHOTO_URL}
-        alt="A night food fair with rows of lit stalls and a big crowd"
-        loading="lazy"
-        referrerPolicy="no-referrer"
-        onError={() => setOk(false)}
-      />
-    </figure>
-  )
-}
-
 // ---- Food stalls ----
 function Food() {
   return (
     <section className="section food parchment" aria-labelledby="food-title">
       <div className="container food-grid">
-        <FoodPhoto />
+        <figure className="food-photo">
+          <img
+            src={foodPhoto}
+            alt="Food stalls with flower garlands and lanterns, and dancers with dandiyas in front of a lit stage"
+            loading="lazy"
+          />
+        </figure>
         <div className="food-copy">
           <h2 className="section-head section-head--left" id="food-title">
             Food Stalls <em>eat, dance, repeat</em>
@@ -562,7 +564,7 @@ function Food() {
               <Icon name="sticks" /> Bring your own dandiyas
             </li>
             <li>
-              <Icon name="pin" /> {EVENT.venue}, {EVENT.address}
+              <Icon name="bolt" /> Bring the energy. Feel the beats. Own the night.
             </li>
           </ul>
         </div>
@@ -613,14 +615,14 @@ function StickyPassBar() {
     <div className={`pass-bar ${show ? 'is-visible' : ''}`} aria-hidden={!show}>
       <p>
         <span>
-          Only {passesLeftAt(Date.now()).toLocaleString('en-IN')} passes left · Gates open in
+          {passesLeftAt(Date.now())}/{SCARCITY.cap} passes left · Gates open in
         </span>
         <strong>
           {parts[0][1]}d {pad(parts[1][1])}h {pad(parts[2][1])}m
         </strong>
       </p>
       <a href="#register" className="btn btn-orange" tabIndex={show ? 0 : -1}>
-        Get Pass
+        Get Free Pass
       </a>
     </div>
   )

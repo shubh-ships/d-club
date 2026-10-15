@@ -419,52 +419,66 @@ h3 {
 .top-artist {
   display: grid;
   justify-items: center;
-  gap: 6px;
+  gap: 2px;
   width: 128px;
-  white-space: nowrap;
   margin: 0;
+  white-space: nowrap;
   text-align: center;
-}
-
-.top-artist img {
-  width: 76px;
-  height: 76px;
-  object-fit: cover;
-  object-position: top;
-  border-radius: 50%;
-  border: 2.5px solid var(--gold);
-  box-shadow: 0 0 0 3px rgba(42, 7, 16, 0.9), 0 0 22px rgba(255, 170, 70, 0.55), 0 10px 18px -8px rgba(0, 0, 0, 0.8);
-}
-
-.top-artist {
   text-decoration: none;
   transition: transform 0.25s var(--ease-out);
 }
 
-.top-artist:hover {
-  transform: translateY(-2px);
+/* frameless: the artist dissolves into the scene, lit by a warm spotlight from behind */
+.spotlit {
+  position: relative;
+  display: block;
+  width: 108px;
+  aspect-ratio: 4 / 5;
 }
 
-.top-artist-cap {
-  display: grid;
-  line-height: 1.2;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
+.spotlit::before {
+  content: '';
+  position: absolute;
+  inset: -18% -22% -6%;
+  background: radial-gradient(closest-side, rgba(255, 170, 70, 0.55), rgba(232, 96, 28, 0.18) 60%, transparent);
 }
 
-.top-artist strong {
+.spotlit img {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 12%;
+  -webkit-mask-image: radial-gradient(ellipse 50% 52% at 50% 42%, #000 58%, transparent 100%);
+  mask-image: radial-gradient(ellipse 50% 52% at 50% 42%, #000 58%, transparent 100%);
+}
+
+.spotlit-role {
+  margin-top: -12px;
+  font-family: var(--font-script);
+  font-size: 1.15rem;
+  line-height: 1;
+  color: var(--orange);
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.8);
+}
+
+.spotlit-name {
   font-family: var(--font-caps);
   font-weight: 700;
-  font-size: 0.68rem;
-  letter-spacing: 0.04em;
+  font-size: 0.74rem;
+  letter-spacing: 0.08em;
+  line-height: 1.15;
   text-transform: uppercase;
-  color: var(--gold-light);
+  background: var(--gold-text);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.8));
 }
 
-.top-artist-cap > span {
-  font-family: var(--font-italic);
-  font-style: italic;
-  font-size: 0.82rem;
-  color: var(--cream-dim);
+.top-artist:hover {
+  transform: translateY(-2px);
 }
 
 /* ─── Free entry plaque (links to the form) ─── */
@@ -893,6 +907,11 @@ h3 {
   color: var(--red);
 }
 
+.passes-cap {
+  font-weight: 500;
+  color: var(--ink-soft);
+}
+
 .passes-left .live-dot {
   background: var(--red);
   box-shadow: none;
@@ -995,6 +1014,31 @@ h3 {
 
 .info-row > div + div {
   border-left: 1px solid rgba(233, 180, 76, 0.3);
+}
+
+.info-map {
+  position: relative;
+}
+
+.info-map-link {
+  position: absolute;
+  inset: -6px;
+  border-radius: 10px;
+}
+
+.info-map-link:hover {
+  background: rgba(233, 180, 76, 0.08);
+}
+
+.info-row dd.info-map-hint {
+  margin-top: 4px;
+  font-family: var(--font-body);
+  font-size: 0.68rem;
+  letter-spacing: 0.04em;
+  text-transform: none;
+  color: var(--gold);
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
 .info-row .icon {
@@ -1799,6 +1843,19 @@ h3 {
   margin-top: 24px;
 }
 
+.pass-actions .pass-map {
+  grid-column: 1 / -1;
+}
+
+.thanks-sendoff {
+  max-width: 30ch;
+  margin-top: 40px;
+  font-family: var(--font-script);
+  font-size: clamp(1.7rem, 6.5vw, 2.3rem);
+  line-height: 1.2;
+  color: var(--maroon);
+}
+
 .save-tip {
   max-width: 40ch;
   margin-top: 12px;
@@ -1848,7 +1905,8 @@ h3 {
   display: grid;
   justify-items: center;
   gap: 10px;
-  padding: 18px 10px 16px;
+  min-width: 0;
+  padding: 18px 6px 16px;
   border-radius: 16px;
   background: linear-gradient(180deg, var(--maroon), var(--maroon-deep));
   border: 1px solid var(--gold);
@@ -1891,8 +1949,8 @@ h3 {
   gap: 6px;
   max-width: 100%;
   margin-top: 6px;
-  font-size: 0.76rem;
-  overflow-wrap: anywhere;
+  font-size: clamp(0.62rem, 2.6vw, 0.78rem);
+  white-space: nowrap;
   color: var(--cream-dim);
   text-decoration: none;
 }
@@ -2014,14 +2072,14 @@ h3 {
     width: 140px;
   }
 
-  .top-artist img {
-    width: 96px;
-    height: 96px;
+  .spotlit {
+    width: 128px;
   }
 
-  .top-artist strong {
+  .spotlit-name {
     font-size: 0.85rem;
   }
+
 
   .register-card {
     padding: 52px 36px 32px;
@@ -2068,9 +2126,16 @@ h3 {
     width: 170px;
   }
 
-  .top-artist img {
-    width: 112px;
-    height: 112px;
+  .spotlit {
+    width: 150px;
+  }
+
+  .spotlit-role {
+    font-size: 1.4rem;
+  }
+
+  .spotlit-name {
+    font-size: 0.95rem;
   }
 
   .hero {
