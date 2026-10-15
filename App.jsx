@@ -3,12 +3,11 @@ import ThankYou from './components/ThankYou.jsx'
 import { fetchRegistrationCount, registerGuest } from './supabase.js'
 import { BrushEdge, DandiyaStick, Icon, Lotus, Mandala, Ornament } from './components/Decor.jsx'
 import heroDance from './assets/poster/hero-dance.webp'
-import djDecks from './assets/artists/dj-decks.webp'
+import djPhoto from './assets/artists/dj-beat-crush-photo.webp'
 import djFace from './assets/artists/dj-beat-crush.webp'
-import djFaceLarge from './assets/artists/dj-beat-crush-lg.webp'
 import sistersPhoto from './assets/artists/malhotra-sisters.webp'
 import sistersFace from './assets/artists/malhotra-sisters-face.webp'
-import clubPhoto from './assets/vibes/bhajan-kirtan.webp'
+import clubPhoto from './assets/vibes/bhajan-clubbing.webp'
 import dandiyaPhoto from './assets/vibes/dandiya-night.webp'
 import foodPhoto from './assets/vibes/food-stalls.webp'
 import djCard from './assets/artists/dj-beat-crush-card.webp'
@@ -35,7 +34,7 @@ const EVENT = {
 }
 
 const LINEUP = [
-  { role: 'On the decks', name: 'DJ Beat Crush', short: 'DJ Beat Crush', photo: djDecks, portrait: djFaceLarge, face: djFace, card: djCard, insta: 'beatcrushmusic', note: "Delhi's most popular DJ is bringing the beats to your Dandiya night." },
+  { role: 'On the decks', name: 'DJ Beat Crush', short: 'DJ Beat Crush', photo: djPhoto, face: djFace, card: djCard, insta: 'beatcrushmusic', note: "Delhi's most popular DJ is bringing the beats to your Dandiya night." },
   { role: 'Performing live', name: 'Malhotra Sisters', short: 'Malhotra Sisters', photo: sistersPhoto, face: sistersFace, card: sistersCard, insta: 'malhotrasistersofficial', note: 'The Malhotra Sisters are bringing divine melodies and soulful energy to Bhajan Clubbing.' },
 ]
 
@@ -226,9 +225,8 @@ function Lineup() {
         <ul className="lineup">
           {LINEUP.map((a) => (
             <li className="act" key={a.name}>
-              <span className={`act-photo${a.portrait ? ' act-photo--booth' : ''}`}>
-                <img src={a.photo} alt={a.portrait ? '' : a.name} loading="lazy" />
-                {a.portrait && <img className="act-portrait" src={a.portrait} alt={a.name} loading="lazy" />}
+              <span className="act-photo">
+                <img src={a.photo} alt={a.name} loading="lazy" />
               </span>
               <span className="act-body">
                 <span className="act-role">{a.role}</span>
