@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import ThankYou from './components/ThankYou.jsx'
-import { fetchRegistrationCount, registerGuest } from './supabase.js'
+import { registerGuest } from './supabase.js'
 import { BrushEdge, DandiyaStick, Icon, Lotus, Mandala, Ornament } from './components/Decor.jsx'
 import heroDance from './assets/poster/hero-dance.webp'
 import djPhoto from './assets/artists/dj-beat-crush-photo.webp'
@@ -71,8 +71,7 @@ const ORBS = [
   ['90%', 11, '255, 130, 80', '8.5s', '-5s'],
 ].map(([x, size, c, t, d]) => ({ '--x': x, '--s': `${size}px`, '--c': c, '--t': t, '--d': d }))
 
-// Live count is shown only once it is big enough to persuade.
-const SOCIAL_PROOF_MIN = 50
+
 
 // -----------------------------------
 
@@ -144,18 +143,7 @@ function PassesLeft({ compact = false }) {
   )
 }
 
-// One lookup per visit (cached 5 min) — no polling, so traffic spikes don't multiply Supabase calls.
-function useRegistrationCount() {
-  const [count, setCount] = useState(null)
-  useEffect(() => {
-    let alive = true
-    fetchRegistrationCount().then((n) => alive && n !== null && setCount(n))
-    return () => {
-      alive = false
-    }
-  }, [])
-  return count
-}
+
 
 // A static crossed pair of dandiya sticks.
 function CrossedDandiyas({ className = '' }) {
@@ -246,7 +234,6 @@ function Lineup() {
 
 // ---- Registration form ----
 function RegisterCard({ onRegistered }) {
-  const count = useRegistrationCount()
   const [form, setForm] = useState({ name: '', phone: '', age: '', pincode: '' })
   const [errors, setErrors] = useState({})
   const [status, setStatus] = useState('idle')
@@ -293,12 +280,7 @@ function RegisterCard({ onRegistered }) {
       <h2 className="form-title">Grab your free pass</h2>
       <p className="form-sub">Bhajan Clubbing + Dandiya Night</p>
       <PassesLeft />
-      {count >= SOCIAL_PROOF_MIN && (
-        <p className="social-proof">
-          <span className="live-dot" aria-hidden="true" />
-          <strong>{count.toLocaleString('en-IN')}</strong> people already have their pass
-        </p>
-      )}
+
       <label>
         <span className="label-text">
           Full Name <abbr title="required">*</abbr>
