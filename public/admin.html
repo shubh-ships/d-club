@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Registrations · Bhajan Clubbing</title>
+    <style>
+      :root {
+        --maroon: #7a1428;
+        --maroon-deep: #4a0a17;
+        --gold: #e9b44c;
+        --ink: #2b1308;
+        --ink-soft: #6e4b33;
+        --line: #e6d6b8;
+        --bg: #f8eedb;
+        --card: #fffaf0;
+        --red: #a3141c;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font: 15px/1.5 system-ui, -apple-system, 'Segoe UI', sans-serif;
+        color: var(--ink);
+        background: var(--bg);
+      }
+      button, input { font: inherit; }
+      .wrap { width: min(1200px, 100% - 32px); margin: 0 auto; padding: 24px 0 48px; }
+      h1 { margin: 0; font-size: 1.4rem; color: var(--maroon); }
+      .muted { color: var(--ink-soft); }
+      .btn {
+        display: inline-flex; align-items: center; gap: 6px;
+        min-height: 40px; padding: 8px 16px;
+        border: 1px solid var(--maroon); border-radius: 10px;
+        background: var(--maroon); color: #fff; cursor: pointer; font-weight: 600;
+      }
+      .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+      .btn-ghost { background: transparent; color: var(--maroon); }
+      input {
+        width: 100%; min-height: 40px; padding: 8px 12px;
+        border: 1px solid var(--line); border-radius: 10px; background: #fff; color: var(--ink);
+      }
+      input:focus { outline: 2px solid var(--gold); outline-offset: 1px; }
+      label { display: grid; gap: 4px; font-size: 0.8rem; font-weight: 600; color: var(--ink-soft); }
+
+      /* login */
+      .login {
+        width: min(380px, 100% - 32px); margin: 12vh auto 0; padding: 28px;
+        display: grid; gap: 14px;
+        background: var(--card); border: 1px solid var(--line); border-radius: 16px;
+        box-shadow: 0 20px 40px -24px rgba(43, 19, 8, 0.4);
+      }
+      .error { margin: 0; color: var(--red); font-weight: 600; }
+
+      /* dashboard */
+      .top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
+      .stats { display: flex; flex-wrap: wrap; gap: 10px; margin: 18px 0; }
+      .stat {
+        padding: 10px 16px; border-radius: 12px; background: var(--card); border: 1px solid var(--line);
+      }
+      .stat b { display: block; font-size: 1.4rem; color: var(--maroon); font-variant-numeric: tabular-nums; }
+      .stat span { font-size: 0.78rem; color: var(--ink-soft); }
+      .filters {
+        display: grid; gap: 10px;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        padding: 14px; border-radius: 14px; background: var(--card); border: 1px solid var(--line);
+      }
+      .filters .actions { display: flex; align-items: end; gap: 8px; }
+      .table-wrap {
+        margin-top: 14px; overflow-x: auto;
+        border-radius: 14px; border: 1px solid var(--line); background: #fff;
+      }
+      table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+      th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--line); white-space: nowrap; }
+      th { position: sticky; top: 0; background: var(--maroon-deep); color: #fff; font-size: 0.8rem; font-weight: 600; cursor: pointer; user-select: none; }
+      tr:last-child td { border-bottom: 0; }
+      tbody tr:nth-child(even) { background: #fdf8ee; }
+      .empty { padding: 32px; text-align: center; color: var(--ink-soft); }
+      .pager { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 12px; }
+      [hidden] { display: none !important; }
+    </style>
+  </head>
+  <body>
+    <form class="login" id="login" autocomplete="on">
+      <h1>Registrations</h1>
+      <p class="muted" style="margin:0">Bhajan Clubbing — Dandiya Edition</p>
+      <label>Username <input name="username" autocomplete="username" required /></label>
+      <label>Password <input name="password" type="password" autocomplete="current-password" required /></label>
+      <p class="error" id="login-error" role="alert" hidden></p>
+      <button class="btn" type="submit" id="login-btn">Sign in</button>
+    </form>
+
+    <main class="wrap" id="app" hidden>
+      <div class="top">
+        <div>
+          <h1>Registrations</h1>
+          <span class="muted" id="updated"></span>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn btn-ghost" id="refresh" type="button">Refresh</button>
+          <button class="btn" id="csv" type="button">Download CSV</button>
+          <button class="btn btn-ghost" id="logout" type="button">Log out</button>
+        </div>
+      </div>
+
+      <div class="stats">
+        <div class="stat"><b id="s-total">0</b><span>Total registrations</span></div>
+        <div class="stat"><b id="s-today">0</b><span>Registered today</span></div>
+        <div class="stat"><b id="s-shown">0</b><span>Matching filters</span></div>
+        <div class="stat"><b id="s-age">–</b><span>Average age (filtered)</span></div>
+      </div>
+
+      <form class="filters" id="filters">
+        <label>Search name / phone <input name="q" placeholder="e.g. Sharma or 98765" /></label>
+        <label>PIN code <input name="pincode" inputmode="numeric" placeholder="e.g. 110022" /></label>
+        <label>Age from <input name="ageMin" type="number" min="0" /></label>
+        <label>Age to <input name="ageMax" type="number" min="0" /></label>
+        <label>Registered from <input name="from" type="date" /></label>
+        <label>Registered to <input name="to" type="date" /></label>
+        <div class="actions"><button class="btn btn-ghost" type="reset">Clear filters</button></div>
+      </form>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th data-k="i">#</th>
+              <th data-k="name">Name</th>
+              <th data-k="phone">Phone</th>
+              <th data-k="age">Age</th>
+              <th data-k="pincode">PIN code</th>
+              <th data-k="created_at">Registered (IST) ▼</th>
+            </tr>
+          </thead>
+          <tbody id="rows"></tbody>
+        </table>
+        <p class="empty" id="empty" hidden>No registrations match these filters.</p>
+      </div>
+      <div class="pager">
+        <span class="muted" id="page-info"></span>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-ghost" id="prev" type="button">← Prev</button>
+          <button class="btn btn-ghost" id="next" type="button">Next →</button>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      const $ = (id) => document.getElementById(id)
+      const PAGE_SIZE = 100
+      const KEY = 'bc-admin-auth'
+      let auth = sessionStorage.getItem(KEY)
+      let all = []
+      let shown = []
+      let page = 0
+      let sort = { k: 'created_at', dir: -1 }
+
+      const ist = new Intl.DateTimeFormat('en-IN', { timeZone: 'Asia/Kolkata', dateStyle: 'medium', timeStyle: 'short' })
+      const istDay = (d) => new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Kolkata' }).format(d) // YYYY-MM-DD
+      const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c])
+
+      async function load() {
+        $('refresh').disabled = true
+        try {
+          const r = await fetch('/api/registrations', { headers: { Authorization: `Basic ${auth}` }, cache: 'no-store' })
+          const body = await r.json().catch(() => ({}))
+          if (r.status === 401) return logout('Wrong username or password.')
+          if (!r.ok) throw new Error(body.error || `Error ${r.status}`)
+          all = body.rows.map((row) => ({ ...row, _day: istDay(new Date(row.created_at)) }))
+          $('login').hidden = true
+          $('app').hidden = false
+          $('updated').textContent = `Updated ${ist.format(new Date())}`
+          render()
+        } catch (err) {
+          if ($('app').hidden) showLoginError(err.message)
+          else alertBar(err.message)
+        } finally {
+          $('refresh').disabled = false
+        }
+      }
+
+      function alertBar(msg) { $('updated').textContent = msg }
+      function showLoginError(msg) { $('login-error').textContent = msg; $('login-error').hidden = false }
+
+      function logout(msg) {
+        sessionStorage.removeItem(KEY)
+        auth = null
+        all = []
+        $('app').hidden = true
+        $('login').hidden = false
+        // a failed sign-in keeps the username; a deliberate log out clears both
+        if (msg) {
+          $('login').password.value = ''
+          showLoginError(msg)
+        } else {
+          $('login').reset()
+        }
+      }
+
+      function filtered() {
+        const f = Object.fromEntries(new FormData($('filters')))
+        const q = f.q.trim().toLowerCase()
+        const qDigits = q.replace(/\D/g, '')
+        const min = f.ageMin === '' ? null : Number(f.ageMin)
+        const max = f.ageMax === '' ? null : Number(f.ageMax)
+        return all.filter((r) => {
+          if (q && !(r.name.toLowerCase().includes(q) || (qDigits && r.phone.includes(qDigits)))) return false
+          if (f.pincode && !(r.pincode || '').startsWith(f.pincode.trim())) return false
+          if (min !== null && !(r.age >= min)) return false
+          if (max !== null && !(r.age <= max)) return false
+          if (f.from && r._day < f.from) return false
+          if (f.to && r._day > f.to) return false
+          return true
+        })
+      }
+
+      function render() {
+        shown = filtered()
+        const { k, dir } = sort
+        if (k !== 'i') shown.sort((a, b) => ((a[k] ?? '') > (b[k] ?? '') ? 1 : (a[k] ?? '') < (b[k] ?? '') ? -1 : 0) * dir)
+        const pages = Math.max(1, Math.ceil(shown.length / PAGE_SIZE))
+        page = Math.min(page, pages - 1)
+        const slice = shown.slice(page * PAGE_SIZE, page * PAGE_SIZE + PAGE_SIZE)
+        $('rows').innerHTML = slice
+          .map((r, i) => `<tr><td>${page * PAGE_SIZE + i + 1}</td><td>${esc(r.name)}</td><td>${esc(r.phone)}</td><td>${esc(r.age ?? '–')}</td><td>${esc(r.pincode ?? '–')}</td><td>${esc(ist.format(new Date(r.created_at)))}</td></tr>`)
+          .join('')
+        $('empty').hidden = shown.length > 0
+        $('s-total').textContent = all.length.toLocaleString('en-IN')
+        $('s-today').textContent = all.filter((r) => r._day === istDay(new Date())).length.toLocaleString('en-IN')
+        $('s-shown').textContent = shown.length.toLocaleString('en-IN')
+        const ages = shown.map((r) => r.age).filter((a) => Number.isFinite(a))
+        $('s-age').textContent = ages.length ? (ages.reduce((s, a) => s + a, 0) / ages.length).toFixed(1) : '–'
+        $('page-info').textContent = shown.length ? `Showing ${page * PAGE_SIZE + 1}–${page * PAGE_SIZE + slice.length} of ${shown.length}` : ''
+        $('prev').disabled = page === 0
+        $('next').disabled = page >= pages - 1
+        $('csv').disabled = shown.length === 0
+        document.querySelectorAll('th').forEach((th) => {
+          th.textContent = th.textContent.replace(/ [▲▼]$/, '') + (th.dataset.k === k ? (dir > 0 ? ' ▲' : ' ▼') : '')
+        })
+      }
+
+      // CSV of exactly what the filters show. Cells starting with = + - @ are neutralised so
+      // spreadsheet apps don't run them as formulas.
+      function downloadCsv() {
+        const cell = (v) => {
+          let s = String(v ?? '')
+          if (/^[=+\-@\t\r]/.test(s)) s = `'${s}`
+          return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s
+        }
+        const head = ['Name', 'Phone', 'Age', 'PIN code', 'Registered (IST)']
+        const lines = shown.map((r) => [r.name, r.phone, r.age, r.pincode, ist.format(new Date(r.created_at))].map(cell).join(','))
+        const blob = new Blob(['﻿' + [head.join(','), ...lines].join('\r\n')], { type: 'text/csv;charset=utf-8' })
+        const a = document.createElement('a')
+        a.href = URL.createObjectURL(blob)
+        a.download = `bhajan-clubbing-registrations-${istDay(new Date())}.csv`
+        a.click()
+        setTimeout(() => URL.revokeObjectURL(a.href), 30000)
+      }
+
+      $('login').addEventListener('submit', (e) => {
+        e.preventDefault()
+        const f = new FormData(e.target)
+        auth = btoa(unescape(encodeURIComponent(`${f.get('username')}:${f.get('password')}`)))
+        sessionStorage.setItem(KEY, auth)
+        $('login-error').hidden = true
+        $('login-btn').disabled = true
+        load().finally(() => ($('login-btn').disabled = false))
+      })
+      $('filters').addEventListener('input', () => { page = 0; render() })
+      $('filters').addEventListener('reset', () => setTimeout(() => { page = 0; render() }))
+      $('refresh').addEventListener('click', load)
+      $('csv').addEventListener('click', downloadCsv)
+      $('logout').addEventListener('click', () => logout())
+      $('prev').addEventListener('click', () => { page--; render() })
+      $('next').addEventListener('click', () => { page++; render() })
+      document.querySelector('thead').addEventListener('click', (e) => {
+        const k = e.target.dataset.k
+        if (!k) return
+        sort = sort.k === k ? { k, dir: -sort.dir } : { k, dir: k === 'created_at' ? -1 : 1 }
+        render()
+      })
+
+      if (auth) load()
+    </script>
+  </body>
+</html>

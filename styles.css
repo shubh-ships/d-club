@@ -454,13 +454,6 @@ h3 {
   mask-image: radial-gradient(ellipse 50% 52% at 50% 42%, #000 58%, transparent 100%);
 }
 
-/* BeatCrush's photo is a grey studio shot: warm it to the scene and fade the backdrop sooner */
-.top-artist--left .spotlit img {
-  filter: sepia(0.45) saturate(1.35) hue-rotate(-12deg) brightness(0.88) contrast(1.08);
-  -webkit-mask-image: radial-gradient(ellipse 44% 48% at 50% 40%, #000 52%, transparent 100%);
-  mask-image: radial-gradient(ellipse 44% 48% at 50% 40%, #000 52%, transparent 100%);
-}
-
 .spotlit-role {
   margin-top: -12px;
   font-family: var(--font-script);
@@ -486,6 +479,30 @@ h3 {
 
 .top-artist:hover {
   transform: translateY(-2px);
+}
+
+.hero-perk {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 14px;
+  font-family: var(--font-caps);
+  font-weight: 600;
+  font-size: clamp(0.7rem, 3vw, 0.88rem);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--gold-light);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+}
+
+.dandiyas--perk {
+  width: 22px;
+  height: 30px;
+}
+
+.dandiyas--perk .dandiyas-stick {
+  width: 7px;
+  margin-left: -3.5px;
 }
 
 /* ─── Free entry plaque (links to the form) ─── */

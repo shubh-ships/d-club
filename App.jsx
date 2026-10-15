@@ -5,13 +5,13 @@ import { BrushEdge, DandiyaStick, Icon, Lotus, Mandala, Ornament } from './compo
 import heroDance from './assets/poster/hero-dance.webp'
 import djPhoto from './assets/artists/dj-beat-crush-photo.webp'
 import djFace from './assets/artists/dj-beat-crush.webp'
-import sistersPhoto from './assets/artists/malhotra-sisters.webp'
-import sistersFace from './assets/artists/malhotra-sisters-face.webp'
+import palakPhoto from './assets/artists/palak-oberoi.webp'
+import palakFace from './assets/artists/palak-oberoi-face.webp'
 import clubPhoto from './assets/vibes/bhajan-clubbing.webp'
 import dandiyaPhoto from './assets/vibes/dandiya-night.webp'
 import foodPhoto from './assets/vibes/food-stalls.webp'
 import djCard from './assets/artists/dj-beat-crush-card.webp'
-import sistersCard from './assets/artists/malhotra-sisters-card.webp'
+import palakCard from './assets/artists/palak-oberoi-card.webp'
 
 
 // ---- Event content: edit here ----
@@ -19,13 +19,13 @@ const EVENT = {
   name: 'Bhajan Clubbing',
   subtitle: 'Dandiya Edition',
   year: '2026',
-  start: '2026-10-21T17:30:00+05:30',
+  start: '2026-10-21T17:00:00+05:30',
   end: '2026-10-21T23:00:00+05:30',
   dateLabel: '21 October 2026',
   dayName: 'Wednesday',
   dateShort: '21 Oct 2026',
-  calendarDates: '20261021T120000Z/20261021T173000Z',
-  timeLabel: '5:30 PM',
+  calendarDates: '20261021T113000Z/20261021T173000Z',
+  timeLabel: '5:00 PM',
   venue: 'Ramleela Ground',
   address: 'Sector 1, R.K. Puram, Delhi',
   mapUrl: 'https://maps.app.goo.gl/wuFRFftdA895KVMt6',
@@ -35,7 +35,7 @@ const EVENT = {
 
 const LINEUP = [
   { role: 'On the decks', name: 'DJ Beat Crush', short: 'DJ Beat Crush', photo: djPhoto, face: djFace, card: djCard, insta: 'beatcrushmusic', note: "Delhi's most popular DJ is bringing the beats to your Dandiya night." },
-  { role: 'Performing live', name: 'Malhotra Sisters', short: 'Malhotra Sisters', photo: sistersPhoto, face: sistersFace, card: sistersCard, insta: 'malhotrasistersofficial', note: 'The Malhotra Sisters are bringing divine melodies and soulful energy to Bhajan Clubbing.' },
+  { role: 'Performing live', name: 'Palak Oberoi', short: 'Palak Oberoi', photo: palakPhoto, face: palakFace, card: palakCard, insta: 'palakoberoilive', note: 'Bringing divine melodies and soulful energy to Bhajan Clubbing.' },
 ]
 
 const VIBES = [
@@ -459,6 +459,11 @@ function Hero({ onRegistered }) {
             </span>
             <Lotus className="plaque-lotus" />
           </a>
+
+          <p className="hero-perk">
+            <CrossedDandiyas className="dandiyas--perk" />
+            Complimentary dandiyas at the venue
+          </p>
         </div>
 
         <div className="hero-form">
@@ -559,7 +564,7 @@ function Food() {
               <Icon name="food" /> Food stalls at the venue
             </li>
             <li>
-              <Icon name="sticks" /> Bring your own dandiyas
+              <Icon name="sticks" /> Complimentary dandiyas
             </li>
             <li>
               <Icon name="bolt" /> Bring the energy. Feel the beats. Own the night.

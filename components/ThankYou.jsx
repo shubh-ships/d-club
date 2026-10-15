@@ -139,7 +139,7 @@ export default function ThankYou({ registration, event, lineup = [], onBack }) {
 
   // Exact invite copy supplied by the organisers.
   const shareUrl = 'https://dandiaxbhajanclubbing.vercel.app'
-  const message = `I just got my FREE pass for Bhajan Clubbing — Dandiya Edition with DJ BeatCrush and Malhotra Sister 🎶🥢 Don't make me go alone — grab yours: ${shareUrl}`
+  const message = `I just got my FREE pass for Bhajan Clubbing — Dandiya Edition with DJ BeatCrush and Palak Oberoi 🎶🥢 Don't make me go alone — grab yours: ${shareUrl}`
 
   // Sharing the pass itself (not just a link) is what makes friends want one.
   const invite = async () => {
@@ -238,8 +238,8 @@ export default function ThankYou({ registration, event, lineup = [], onBack }) {
               <Icon name="sticks" />
             </span>
             <span>
-              <strong>Bring your dandiyas</strong>
-              Carry your own pair of dandiya sticks and jump straight into the circles.
+              <strong>Complimentary dandiyas</strong>
+              Collect your pair of dandiya sticks and jump straight into the circles.
             </span>
           </li>
           <li>
