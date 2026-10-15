@@ -10,7 +10,7 @@ web
 Young people in Delhi (Gen-Z, college-age) who hear about the event through WhatsApp/Instagram shares and open the link on their phones. Their job: decide in seconds whether it's worth going, then grab a free pass.
 
 ## Product Purpose
-Single-page registration site for **Bhajan Clubbing — Dandiya Edition** (21 Oct 2026, 5:00 PM onwards, Ramleela Ground, Sector 1, R.K. Puram, Delhi). Visitors register name, mobile and age for a free entry pass (stored in Supabase), get an on-screen guest pass to download, and are nudged to invite friends. Success = registrations and shares.
+Single-page registration site for **Bhajan Clubbing — Dandiya Edition** (21 Oct 2026, 5:30 PM onwards, Ramleela Ground, Sector 1, R.K. Puram, Delhi). Visitors register name, mobile and age for a free entry pass (stored in Supabase), get an on-screen guest pass to download, and are nudged to invite friends. Success = registrations and shares.
 
 ## Positioning
 A fusion night: devotional bhajans remixed with club beats, plus dandiya raas — tradition that turns the volume up. Not a parents' dandiya night, not a generic club night.
