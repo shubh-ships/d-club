@@ -650,6 +650,8 @@ export default function App() {
   }, [])
 
   const showThanks = (reg) => {
+    // Meta Pixel conversion event (no personal data sent); duplicates aren't new leads
+    if (!reg.duplicate) window.fbq?.('track', 'Lead')
     setRegistration(reg)
     history.pushState({ thanks: true }, '', '#thank-you')
     window.scrollTo(0, 0)
