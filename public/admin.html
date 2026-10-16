@@ -24,7 +24,7 @@
         color: var(--ink);
         background: var(--bg);
       }
-      button, input { font: inherit; }
+      button, input, select { font: inherit; }
       .wrap { width: min(1200px, 100% - 32px); margin: 0 auto; padding: 24px 0 48px; }
       h1 { margin: 0; font-size: 1.4rem; color: var(--maroon); }
       .muted { color: var(--ink-soft); }
@@ -36,11 +36,11 @@
       }
       .btn:disabled { opacity: 0.5; cursor: not-allowed; }
       .btn-ghost { background: transparent; color: var(--maroon); }
-      input {
+      input, select {
         width: 100%; min-height: 40px; padding: 8px 12px;
         border: 1px solid var(--line); border-radius: 10px; background: #fff; color: var(--ink);
       }
-      input:focus { outline: 2px solid var(--gold); outline-offset: 1px; }
+      input:focus, select:focus { outline: 2px solid var(--gold); outline-offset: 1px; }
       label { display: grid; gap: 4px; font-size: 0.8rem; font-weight: 600; color: var(--ink-soft); }
 
       /* login */
@@ -108,11 +108,21 @@
         <div class="stat"><b id="s-today">0</b><span>Registered today</span></div>
         <div class="stat"><b id="s-shown">0</b><span>Matching filters</span></div>
         <div class="stat"><b id="s-age">–</b><span>Average age (filtered)</span></div>
+        <div class="stat"><b id="s-gender">–</b><span>Male / Female / Other (filtered)</span></div>
       </div>
 
       <form class="filters" id="filters">
         <label>Search name / phone <input name="q" placeholder="e.g. Sharma or 98765" /></label>
         <label>PIN code <input name="pincode" inputmode="numeric" placeholder="e.g. 110083" /></label>
+        <label>Gender
+          <select name="gender">
+            <option value="">All</option>
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+            <option value="other">Other</option>
+            <option value="none">Not given</option>
+          </select>
+        </label>
         <label>Age from <input name="ageMin" type="number" min="0" /></label>
         <label>Age to <input name="ageMax" type="number" min="0" /></label>
         <label>Registered from <input name="from" type="date" /></label>
@@ -129,6 +139,7 @@
               <th data-k="phone">Phone</th>
               <th data-k="age">Age</th>
               <th data-k="pincode">PIN code</th>
+              <th data-k="gender">Gender</th>
               <th data-k="created_at">Registered (IST) ▼</th>
             </tr>
           </thead>
@@ -148,6 +159,7 @@
     <script>
       const $ = (id) => document.getElementById(id)
       const PAGE_SIZE = 100
+      const GENDER = { male: 'Male', female: 'Female', other: 'Other' }
       const KEY = 'bc-admin-auth'
       let auth = sessionStorage.getItem(KEY)
       let all = []
@@ -206,6 +218,7 @@
         return all.filter((r) => {
           if (q && !(r.name.toLowerCase().includes(q) || (qDigits && r.phone.includes(qDigits)))) return false
           if (f.pincode && !(r.pincode || '').startsWith(f.pincode.trim())) return false
+          if (f.gender === 'none' ? r.gender : f.gender && r.gender !== f.gender) return false
           if (min !== null && !(r.age >= min)) return false
           if (max !== null && !(r.age <= max)) return false
           if (f.from && r._day < f.from) return false
@@ -222,7 +235,7 @@
         page = Math.min(page, pages - 1)
         const slice = shown.slice(page * PAGE_SIZE, page * PAGE_SIZE + PAGE_SIZE)
         $('rows').innerHTML = slice
-          .map((r, i) => `<tr><td>${page * PAGE_SIZE + i + 1}</td><td>${esc(r.name)}</td><td>${esc(r.phone)}</td><td>${esc(r.age ?? '–')}</td><td>${esc(r.pincode ?? '–')}</td><td>${esc(ist.format(new Date(r.created_at)))}</td></tr>`)
+          .map((r, i) => `<tr><td>${page * PAGE_SIZE + i + 1}</td><td>${esc(r.name)}</td><td>${esc(r.phone)}</td><td>${esc(r.age ?? '–')}</td><td>${esc(r.pincode ?? '–')}</td><td>${esc(GENDER[r.gender] ?? '–')}</td><td>${esc(ist.format(new Date(r.created_at)))}</td></tr>`)
           .join('')
         $('empty').hidden = shown.length > 0
         $('s-total').textContent = all.length.toLocaleString('en-IN')
@@ -230,6 +243,8 @@
         $('s-shown').textContent = shown.length.toLocaleString('en-IN')
         const ages = shown.map((r) => r.age).filter((a) => Number.isFinite(a))
         $('s-age').textContent = ages.length ? (ages.reduce((s, a) => s + a, 0) / ages.length).toFixed(1) : '–'
+        const gc = (g) => shown.filter((r) => r.gender === g).length
+        $('s-gender').textContent = `${gc('male')} / ${gc('female')} / ${gc('other')}`
         $('page-info').textContent = shown.length ? `Showing ${page * PAGE_SIZE + 1}–${page * PAGE_SIZE + slice.length} of ${shown.length}` : ''
         $('prev').disabled = page === 0
         $('next').disabled = page >= pages - 1
@@ -247,8 +262,8 @@
           if (/^[=+\-@\t\r]/.test(s)) s = `'${s}`
           return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s
         }
-        const head = ['Name', 'Phone', 'Age', 'PIN code', 'Registered (IST)']
-        const lines = shown.map((r) => [r.name, r.phone, r.age, r.pincode, ist.format(new Date(r.created_at))].map(cell).join(','))
+        const head = ['Name', 'Phone', 'Age', 'PIN code', 'Gender', 'Registered (IST)']
+        const lines = shown.map((r) => [r.name, r.phone, r.age, r.pincode, GENDER[r.gender] ?? '', ist.format(new Date(r.created_at))].map(cell).join(','))
         const blob = new Blob(['﻿' + [head.join(','), ...lines].join('\r\n')], { type: 'text/csv;charset=utf-8' })
         const a = document.createElement('a')
         a.href = URL.createObjectURL(blob)

@@ -49,12 +49,15 @@ export default async function handler(req, res) {
   if (key.startsWith('eyJ')) headers.Authorization = `Bearer ${key}`
 
   const rows = []
+  // gender was added later; if its column isn't there yet, read without it instead of failing
+  let cols = 'id,name,phone,age,pincode,gender,created_at'
   try {
     for (let offset = 0; ; offset += PAGE) {
-      const r = await fetch(
-        `${url}/rest/v1/registrations?select=id,name,phone,age,pincode,created_at&order=created_at.desc&limit=${PAGE}&offset=${offset}`,
-        { headers }
-      )
+      let r = await fetch(`${url}/rest/v1/registrations?select=${cols}&order=created_at.desc&limit=${PAGE}&offset=${offset}`, { headers })
+      if (r.status === 400 && cols.includes('gender')) {
+        cols = cols.replace(',gender', '')
+        r = await fetch(`${url}/rest/v1/registrations?select=${cols}&order=created_at.desc&limit=${PAGE}&offset=${offset}`, { headers })
+      }
       if (!r.ok) return send(res, 502, { error: `Could not read registrations (Supabase ${r.status}).` })
       const batch = await r.json()
       rows.push(...batch)

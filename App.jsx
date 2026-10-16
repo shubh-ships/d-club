@@ -101,7 +101,7 @@ const pad = (n) => String(n).padStart(2, '0')
 // Scarcity display (owner's choice): a clock-based "passes left" number, identical for every visitor,
 // that only ever goes down — from SCARCITY.from at SCARCITY.launch to SCARCITY.to at gate time.
 // It is not tied to real registrations; the live Supabase counter below is the real figure.
-const SCARCITY = { launch: '2026-10-14T00:00:00+05:30', from: 1200, to: 37, cap: 4000 }
+const SCARCITY = { launch: '2026-10-16T14:40:00+05:30', from: 689, to: 37, cap: 4000 }
 
 function passesLeftAt(now) {
   const start = new Date(SCARCITY.launch).getTime()
@@ -233,8 +233,14 @@ function Lineup() {
 }
 
 // ---- Registration form ----
+const GENDERS = [
+  { value: 'male', label: 'Male' },
+  { value: 'female', label: 'Female' },
+  { value: 'other', label: 'Other' },
+]
+
 function RegisterCard({ onRegistered }) {
-  const [form, setForm] = useState({ name: '', phone: '', age: '', pincode: '' })
+  const [form, setForm] = useState({ name: '', phone: '', age: '', pincode: '', gender: '' })
   const [errors, setErrors] = useState({})
   const [status, setStatus] = useState('idle')
   const [message, setMessage] = useState('')
@@ -258,15 +264,17 @@ function RegisterCard({ onRegistered }) {
     if (!Number.isInteger(age) || age < 5 || age > 100) next.age = 'Enter a valid age (5–100)'
     const pincode = form.pincode
     if (!/^[1-9]\d{5}$/.test(pincode)) next.pincode = 'Enter a valid 6-digit PIN code'
+    const gender = form.gender
+    if (!GENDERS.some((g) => g.value === gender)) next.gender = 'Please select your gender'
     setErrors(next)
     if (Object.keys(next).length) return
 
     setStatus('sending')
     try {
-      const { duplicate } = await registerGuest({ name, phone, age, pincode })
-      setForm({ name: '', phone: '', age: '', pincode: '' })
+      const { duplicate } = await registerGuest({ name, phone, age, pincode, gender })
+      setForm({ name: '', phone: '', age: '', pincode: '', gender: '' })
       setStatus('idle')
-      onRegistered({ name, phone, age, pincode, duplicate })
+      onRegistered({ name, phone, age, pincode, gender, duplicate })
     } catch (err) {
       setMessage(err.message)
       setStatus('error')
@@ -321,6 +329,20 @@ function RegisterCard({ onRegistered }) {
         </span>
         {errors.phone && <small>{errors.phone}</small>}
       </label>
+      <fieldset className="gender" aria-invalid={!!errors.gender}>
+        <legend className="label-text">
+          Gender <abbr title="required">*</abbr>
+        </legend>
+        <div className="gender-options">
+          {GENDERS.map((g) => (
+            <label key={g.value} className={`gender-option${form.gender === g.value ? ' is-on' : ''}`}>
+              <input type="radio" name="gender" value={g.value} checked={form.gender === g.value} onChange={update} />
+              {g.label}
+            </label>
+          ))}
+        </div>
+        {errors.gender && <small>{errors.gender}</small>}
+      </fieldset>
       <div className="form-row">
         <label>
           <span className="label-text">

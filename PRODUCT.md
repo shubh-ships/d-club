@@ -17,7 +17,7 @@ A fusion night: devotional bhajans remixed with club beats, plus dandiya raas �
 
 ## Capabilities and Constraints
 - React 18 + Vite, single-file build (vite-plugin-singlefile): JS, CSS, self-hosted fonts (assets/fonts, OFL) and photos are all inlined, so a visit is one request to Vercel. Keep new assets small; they ship inside index.html. Deployed on Vercel.
-- Registration via Supabase (`supabase.js`): name, mobile, age (5–100), 6-digit PIN code. Schema in `supabase/schema.sql`. Duplicate numbers shown as "already registered".
+- Registration via Supabase (`supabase.js`): name, mobile, gender (male/female/other), age (5–100), 6-digit PIN code. Schema in `supabase/schema.sql`. Duplicate numbers shown as "already registered".
 - Thank-you view: on-screen guest pass with two actions only — Download Pass and Invite Friends (Web Share / WhatsApp).
 - No navbar (matches frontend/). The Wowsly URL stays in `EVENT.wowslyUrl` but is not linked on the page.
 - No social media accounts exist; do not add social links.

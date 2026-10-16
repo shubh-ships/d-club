@@ -1202,6 +1202,61 @@ h3 {
   color: #9a7d66;
 }
 
+.gender {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+
+.gender legend {
+  padding: 0;
+  margin-bottom: 6px;
+}
+
+.gender-options {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.gender-option {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  min-height: 46px;
+  border-radius: 10px;
+  border: 1.5px solid var(--line);
+  background: #fffaf0;
+  font-weight: 500;
+  color: var(--ink);
+  cursor: pointer;
+  transition: border-color 0.2s, background-color 0.2s, color 0.2s;
+}
+
+.gender-option input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.gender-option.is-on {
+  border-color: var(--maroon);
+  background: var(--maroon);
+  color: var(--cream);
+}
+
+.gender-option:has(input:focus-visible) {
+  outline: 3px solid var(--maroon);
+  outline-offset: 2px;
+}
+
+.gender[aria-invalid='true'] .gender-option {
+  border-color: var(--red);
+}
+
 .form-row {
   display: grid;
   grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
